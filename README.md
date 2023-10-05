@@ -1,5 +1,6 @@
 # Blogs
 An app for reading blogs, it also have functionality to save posts locally for offline use.
+It uses provider for state management and Hive for local database.
 
 
 ![WhatsApp Image 2023-10-06 at 12 27 51 AM](https://github.com/MRfantastic3DGamer/Blogs/assets/66933165/a301a365-616b-46dc-80bb-9f2fb98442e8)
