@@ -1,5 +1,7 @@
 # Blogs
 An app for reading blogs, it also have functionality to save posts locally for offline use.
+
+
 It uses provider for state management and Hive for local database.
 
 
