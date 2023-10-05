@@ -1,5 +1,5 @@
 # Blogs
-An app for reading blogs
+An app for reading blogs, it also have functionality to save posts locally for offline use.
 
 
 ## Installation guide
