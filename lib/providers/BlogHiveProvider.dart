@@ -1,26 +1,56 @@
+import 'dart:typed_data';
 
-import 'dart:io';
-
+import 'package:blogs/model/BlogPost.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+
+import '../model/BlogHiveModel.dart';
 
 class BlogHiveProvider extends ChangeNotifier{
-  static String boxName = "BlogsBox";
-  String path = "";
-  var box = Hive.box(boxName);
+  static String postsBoxName = "postsBox";
+  bool initialized = false;
+  late Box<BlogModel> box;
+  List<BlogModel> savedBlogs = [];
 
-  Future<void> init() async {
-    var path = "${Directory.current.path}/$boxName";
-    final collection = await BoxCollection.open(
-      "hiveDatabase",
-      {boxName},
-      path: path,
-      // key: HiveCipher(),
-    );
+  BlogModel selectedPost = BlogModel("",Uint8List(0),"");
 
-    Hive
-      ..init(path);
-      // ..registerAdapter(PersonAdapter());
-    var box = await Hive.openBox('testBox');
+  Future<void> initHive() async {
+    box = await Hive.openBox<BlogModel>(postsBoxName);
+    savedBlogs.clear();
+    for (var element in box.values) {
+      savedBlogs.add(element);
+    }
+    initialized = true;
   }
+
+  Future<void> addPost(BlogPost post) async {
+    if(!initialized) await initHive();
+    if(box.containsKey(post.id)) return;
+    var image = await fetchImageFromUrl(post.imageUrl);
+    box.put(post.id, BlogModel(post.id, image, post.title));
+    notifyListeners();
+  }
+
+  Future<void> removePost(String key) async {
+    if(!initialized) await initHive();
+    await box.delete(key);
+    savedBlogs.removeWhere((it) => it.id == key);
+    notifyListeners();
+  }
+
+  Future<Uint8List> fetchImageFromUrl(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    } else {
+      throw Exception('Failed to fetch image');
+    }
+  }
+
+  void select(BlogModel post){
+    selectedPost = post;
+    notifyListeners();
+  }
+
 }

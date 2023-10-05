@@ -54,8 +54,9 @@ class BlogProvider with ChangeNotifier {
 
   void refresh(){
     isAPIAvailable = true;
+    apiFetched = false;
     blogs = [];
-    notifyListeners();
     fetchBlogs();
+    notifyListeners();
   }
 }

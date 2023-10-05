@@ -1,4 +1,6 @@
+import 'package:blogs/Styles/ColorStyles.dart';
 import 'package:blogs/model/BlogPost.dart';
+import 'package:blogs/providers/BlogHiveProvider.dart';
 import 'package:blogs/providers/BlogProvider.dart';
 import 'package:blogs/screens/Components/BlogPhoto.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,14 @@ class BlogDetail extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.small(
+        backgroundColor: ColorStyles.textColor,
+        onPressed: () async {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("downloading"), duration: Duration(milliseconds: 500),));
+          await Provider.of<BlogHiveProvider>(context, listen: false).addPost(post);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("downloaded"), duration: Duration(milliseconds: 500),));
+        },
+        child: const Icon(Icons.download_rounded)),
     );
   }
 }
